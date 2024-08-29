@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,8 +19,9 @@ public class Oficina {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(unique = true)
     private String nombre;
     @ManyToMany(mappedBy = "oficinas", fetch = FetchType.LAZY)
     @JsonBackReference
-    private List<Empleado> empleados;
+    private List<Empleado> empleados = new ArrayList<>();
 }

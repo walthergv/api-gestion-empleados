@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Dni {
-    String message() default "El DNI no es válido";
+    String message() default "El formato de DNI no es válido";
     Class<?>[] groups() default {};
     Class<? extends jakarta.validation.Payload>[] payload() default {};
 }

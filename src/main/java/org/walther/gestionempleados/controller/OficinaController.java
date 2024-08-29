@@ -7,6 +7,7 @@ import org.walther.gestionempleados.model.dto.OficinaDTO;
 import org.walther.gestionempleados.service.OficinaService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/oficinas")
@@ -23,9 +24,30 @@ public class OficinaController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<OficinaDTO> obtenerOficinaPorId(@PathVariable Integer id){
+        try {
+            return ResponseEntity.ok(oficinaService.obtenerOficinaPorId(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @PostMapping
     public ResponseEntity<OficinaDTO> crearOficina(@RequestBody OficinaDTO oficinaDTO){
         return ResponseEntity.ok(oficinaService.crearOficina(oficinaDTO));
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<OficinaDTO> actualizarOficina(@PathVariable Integer id, @RequestBody Map<String, String> request) {
+        try {
+            String nuevoNombre = request.get("nombre");
+            OficinaDTO oficinaDTO = oficinaService.obtenerOficinaPorId(id);
+            oficinaDTO.setNombre(nuevoNombre);
+            return ResponseEntity.ok(oficinaService.actualizarOficina(oficinaDTO));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping("/{id}")

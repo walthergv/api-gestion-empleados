@@ -3,10 +3,14 @@ package org.walther.gestionempleados.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.walther.gestionempleados.model.dto.OficinaDTO;
+import org.walther.gestionempleados.model.entity.Empleado;
 import org.walther.gestionempleados.model.entity.Oficina;
 import org.walther.gestionempleados.repository.OficinaRepository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class OficinaServiceImp implements OficinaService{
     @Autowired
@@ -14,7 +18,21 @@ public class OficinaServiceImp implements OficinaService{
     @Override
     public OficinaDTO crearOficina(OficinaDTO oficinaDTO) {
         try {
-            return getOficinaDTO(oficinaDTO);
+            Oficina oficina = new Oficina();
+            oficina.setNombre(oficinaDTO.getNombre());
+            oficina.setEmpleados(new ArrayList<>());
+
+            Oficina oficinaGuardada = oficinaRepository.save(oficina);
+            return new OficinaDTO(oficinaGuardada.getId(), oficinaGuardada.getNombre(), oficinaGuardada.getEmpleados().stream().map(empleado -> new Empleado(
+                    empleado.getId(),
+                    empleado.getNombre(),
+                    empleado.getApellido(),
+                    empleado.getTelefono(),
+                    empleado.getDni(),
+                    empleado.getDireccion(),
+                    empleado.getFecha_nacimiento(),
+                    null // Evitar referencia circular
+            )).collect(Collectors.toList()));
         } catch (Exception e) {
             throw new RuntimeException("Error al guardar la oficina", e);
         }
@@ -24,7 +42,20 @@ public class OficinaServiceImp implements OficinaService{
     public List<OficinaDTO> obtenerOficinas() {
         try {
             List<Oficina> oficinas = oficinaRepository.findAll();
-            return oficinas.stream().map(oficina -> new OficinaDTO(oficina.getId(), oficina.getNombre(), oficina.getEmpleados())).toList();
+            return oficinas.stream().map(oficina -> new OficinaDTO(
+                    oficina.getId(),
+                    oficina.getNombre(),
+                    oficina.getEmpleados().stream().map(empleado -> new Empleado(
+                            empleado.getId(),
+                            empleado.getNombre(),
+                            empleado.getApellido(),
+                            empleado.getTelefono(),
+                            empleado.getDni(),
+                            empleado.getDireccion(),
+                            empleado.getFecha_nacimiento(),
+                            null // Avoid circular reference
+                    )).collect(Collectors.toList())
+            )).collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException("Error al obtener las oficinas", e);
         }
@@ -35,7 +66,16 @@ public class OficinaServiceImp implements OficinaService{
         try {
             if (oficinaRepository.existsById(id)) {
                 Oficina oficina = oficinaRepository.getById(id);
-                return new OficinaDTO(oficina.getId(), oficina.getNombre(), oficina.getEmpleados());
+                return new OficinaDTO(oficina.getId(), oficina.getNombre(), oficina.getEmpleados().stream().map(empleado -> new Empleado(
+                        empleado.getId(),
+                        empleado.getNombre(),
+                        empleado.getApellido(),
+                        empleado.getTelefono(),
+                        empleado.getDni(),
+                        empleado.getDireccion(),
+                        empleado.getFecha_nacimiento(),
+                        null // Avoid circular reference
+                )).collect(Collectors.toList()));
             } else {
                 throw new RuntimeException("La oficina no existe");
             }
@@ -48,7 +88,19 @@ public class OficinaServiceImp implements OficinaService{
     public OficinaDTO actualizarOficina(OficinaDTO oficinaDTO) {
         try {
             if (oficinaRepository.existsById(oficinaDTO.getId())) {
-                return getOficinaDTO(oficinaDTO);
+                Oficina oficina = oficinaRepository.getById(oficinaDTO.getId());
+                oficina.setNombre(oficinaDTO.getNombre());
+                oficinaRepository.save(oficina);
+                return new OficinaDTO(oficina.getId(), oficina.getNombre(), oficina.getEmpleados().stream().map(empleado -> new Empleado(
+                        empleado.getId(),
+                        empleado.getNombre(),
+                        empleado.getApellido(),
+                        empleado.getTelefono(),
+                        empleado.getDni(),
+                        empleado.getDireccion(),
+                        empleado.getFecha_nacimiento(),
+                        null // Avoid circular reference
+                )).collect(Collectors.toList()));
             } else {
                 throw new RuntimeException("La oficina no existe");
             }
@@ -68,13 +120,5 @@ public class OficinaServiceImp implements OficinaService{
         } catch (Exception e) {
             throw new RuntimeException("Error al eliminar la oficina", e);
         }
-    }
-    private OficinaDTO getOficinaDTO(OficinaDTO oficinaDTO) {
-        Oficina oficina = new Oficina();
-        oficina.setId(oficinaDTO.getId());
-        oficina.setNombre(oficinaDTO.getNombre());
-
-        Oficina oficinaGuardada = oficinaRepository.save(oficina);
-        return new OficinaDTO(oficinaGuardada.getId(), oficinaGuardada.getNombre(), oficinaGuardada.getEmpleados());
     }
 }

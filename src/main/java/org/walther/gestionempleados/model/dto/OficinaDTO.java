@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class OficinaDTO {
     private int id;
-    //@NotNull @NotEmpty
+    @NotNull @NotEmpty
     private String nombre;
     private List<Empleado> empleados;
 }

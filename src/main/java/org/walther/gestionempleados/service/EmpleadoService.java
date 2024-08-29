@@ -11,5 +11,6 @@ public interface EmpleadoService {
     List<EmpleadoSummaryDTO> obtenerEmpleados();
     EmpleadoSummaryDTO obtenerEmpleadoPorId(Integer id);
     EmpleadoSummaryDTO actualizarEmpleado(EmpleadoDTO empleadoDTO);
-    void eliminarEmpleadoPorDni(String dni);
+    void eliminarEmpleado(Integer id);
+    EmpleadoSummaryDTO asignarOficinaAEmpleado(int empleadoId, String nombreOficina);
 }

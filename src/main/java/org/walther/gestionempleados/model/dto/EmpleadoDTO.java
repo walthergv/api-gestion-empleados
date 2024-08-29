@@ -21,16 +21,16 @@ import java.util.List;
 public class EmpleadoDTO {
     private int id;
     private String nombre;
-    //@NotNull @NotEmpty
+    @NotNull @NotEmpty
     private String apellido;
-    //@NotNull @NotEmpty @Telefono
+    @NotNull @NotEmpty @Telefono
     private String telefono;
-    //@NotNull @NotEmpty @Dni
+    @NotNull @NotEmpty @Dni
     private String dni;
-    //@NotNull @NotEmpty
+    @NotNull @NotEmpty
     private String direccion;
-    //@NotNull @Past
-    @DateTimeFormat(pattern = "yyyy-MM-dd") // Asegúrate de que el formato de la fecha esté correctamente especificado
+    @NotNull @Past
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fecha_nacimiento;
     private List<Oficina> oficinas;
 }
